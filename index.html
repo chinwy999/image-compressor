@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="أداة عربية مجانية لضغط وتحويل الصور مباشرة من هاتفك دون رفعها إلى خادم.">
+  <title>ضاغط الصور | ضغط وتحويل JPG وPNG وWebP</title>
+
+  <style>
+    :root {
+      --bg: #09111f;
+      --surface: #111c2f;
+      --surface-2: #17253d;
+      --border: rgba(255,255,255,.12);
+      --text: #eef5ff;
+      --muted: #a9b7ce;
+      --primary: #42c6ff;
+      --primary-dark: #148ccb;
+      --success: #29d391;
+      --danger: #ff6e80;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Arial, Tahoma, sans-serif;
+      background:
+        radial-gradient(circle at 85% 0%, rgba(66,198,255,.17), transparent 31rem),
+        radial-gradient(circle at 0% 100%, rgba(126,87,255,.16), transparent 28rem),
+        var(--bg);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 28px 0 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #7b61ff);
+      box-shadow: 0 10px 28px rgba(66,198,255,.27);
+      font-size: 1.25rem;
+    }
+
+    .hero {
+      max-width: 780px;
+      margin: 34px auto 28px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border: 1px solid rgba(66,198,255,.25);
+      border-radius: 999px;
+      background: rgba(66,198,255,.09);
+      color: #bdeeff;
+      font-size: .86rem;
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(2rem, 7vw, 3.45rem);
+      line-height: 1.18;
+      letter-spacing: -.04em;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.9;
+    }
+
+    .app-card {
+      margin: 34px auto 20px;
+      padding: clamp(18px, 4vw, 34px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: rgba(17,28,47,.88);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .drop-zone {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 245px;
+      padding: 28px;
+      border: 2px dashed rgba(66,198,255,.5);
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(66,198,255,.08), rgba(123,97,255,.07));
+      text-align: center;
+      transition: .2s ease;
+    }
+
+    .drop-zone.dragging {
+      border-color: var(--success);
+      background: rgba(41,211,145,.1);
+      transform: scale(1.01);
+    }
+
+    .upload-icon {
+      display: grid;
+      place-items: center;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 14px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(66,198,255,.28), rgba(123,97,255,.32));
+      font-size: 2rem;
+    }
+
+    .drop-zone h2 {
+      margin: 0 0 8px;
+      font-size: 1.3rem;
+    }
+
+    .drop-zone p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .file-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .privacy-note {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
+      text-align: center;
+    }
+
+    .workspace {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      margin-top: 24px;
+    }
+
+    .workspace.visible {
+      display: grid;
+    }
+
+    @media (min-width: 820px) {
+      .workspace.visible {
+        grid-template-columns: 1.08fr .92fr;
+      }
+    }
+
+    .panel {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 15px;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .image-preview-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 280px;
+      overflow: hidden;
+      border-radius: 16px;
+      background:
+        linear-gradient(45deg, #15243a 25%, transparent 25%),
+        linear-gradient(-45deg, #15243a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #15243a 75%),
+        linear-gradient(-45deg, transparent 75%, #15243a 75%),
+        #0b1423;
+      background-size: 22px 22px;
+      background-position: 0 0, 0 11px, 11px -11px, -11px 0;
+    }
+
+    .image-preview {
+      display: block;
+      max-width: 100%;
+      max-height: 430px;
+      object-fit: contain;
+    }
+
+    .file-name {
+      overflow: hidden;
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: .85rem;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: ltr;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 8px;
+      color: #d9e5f7;
+      font-size: .92rem;
+      font-weight: 700;
+    }
+
+    .field small {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      height: 48px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: #0c1728;
+    }
+
+    select:focus,
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(66,198,255,.13);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .range-value {
+      color: var(--primary);
+      direction: ltr;
+    }
+
+    .dimension-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .dimension-item label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .hint {
+      margin: -7px 0 17px;
+      color: var(--muted);
+      font-size: .77rem;
+      line-height: 1.6;
+    }
+
+    .action-button,
+    .secondary-button,
+    .download-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 52px;
+      gap: 9px;
+      padding: 13px 18px;
+      border-radius: 14px;
+      color: #03101c;
+      background: linear-gradient(135deg, #60d4ff, #44b5ef);
+      box-shadow: 0 10px 25px rgba(66,198,255,.18);
+      font-weight: 800;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .action-button:hover,
+    .download-button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .action-button:disabled {
+      cursor: wait;
+      opacity: .65;
+      transform: none;
+    }
+
+    .secondary-button {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .result {
+      display: none;
+      margin-top: 22px;
+      padding: 20px;
+      border: 1px solid rgba(41,211,145,.25);
+      border-radius: 20px;
+      background: rgba(41,211,145,.055);
+    }
+
+    .result.visible {
+      display: block;
+    }
+
+    .result h3 {
+      margin: 0 0 16px;
+      color: #a8f4d3;
+      font-size: 1.05rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 15px;
+    }
+
+    .stat {
+      padding: 11px 7px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      background: rgba(0,0,0,.12);
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--text);
+      font-size: .92rem;
+      direction: ltr;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .download-button {
+      color: #032015;
+      background: linear-gradient(135deg, #5de3a8, #2bcf8d);
+      box-shadow: 0 10px 25px rgba(41,211,145,.14);
+      text-decoration: none;
+    }
+
+    .info {
+      max-width: 850px;
+      margin: 40px auto 56px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.9;
+    }
+
+    .info h2 {
+      margin: 0 0 10px;
+      color: var(--text);
+      font-size: 1.45rem;
+    }
+
+    .info p {
+      margin: 0;
+    }
+
+    footer {
+      padding: 20px 0 35px;
+      color: #8191ab;
+      font-size: .84rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container">
+    <a class="brand" href="./" aria-label="العودة للصفحة الرئيسية">
+      <span class="brand-icon">🖼️</span>
+      <span>ضاغط الصور</span>
+    </a>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="badge">🔒 تتم المعالجة داخل متصفحك</span>
+      <h1>اضغط وحوّل صورك<br>بسرعة ومن دون رفعها</h1>
+      <p>اختر صورة من هاتفك، حدّد الصيغة والجودة والأبعاد، ثم نزّل النسخة المحسّنة خلال ثوانٍ.</p>
+    </section>
+
+    <section class="app-card" aria-label="أداة ضغط وتحويل الصور">
+      <div class="drop-zone" id="dropZone">
+        <input class="file-input" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="اختر صورة">
+        <div>
+          <div class="upload-icon">☁️</div>
+          <h2>اختر صورة للبدء</h2>
+          <p>اضغط هنا لاختيار صورة من هاتفك أو اسحبها إلى هذه المنطقة</p>
+        </div>
+      </div>
+
+      <p class="privacy-note">🛡️ لا نرفع صورك إلى أي خادم في هذه النسخة.</p>
+
+      <div class="workspace" id="workspace">
+        <section class="panel">
+          <h2 class="panel-title">
+            <span>الصورة الأصلية</span>
+            <span id="originalDimensions">—</span>
+          </h2>
+
+          <div class="image-preview-wrap">
+            <img class="image-preview" id="originalPreview" alt="معاينة الصورة المختارة">
+          </div>
+
+          <p class="file-name" id="fileName">—</p>
+        </section>
+
+        <section class="panel">
+          <h2 class="panel-title">إعدادات المعالجة</h2>
+
+          <div class="field">
+            <label for="format">
+              <span>صيغة الإخراج</span>
+              <small>يفضّل WebP لتقليل الحجم</small>
+            </label>
+            <select id="format">
+              <option value="image/webp">WebP — حجم أصغر غالبًا</option>
+              <option value="image/jpeg">JPG — مناسب للصور الفوتوغرافية</option>
+              <option value="image/png">PNG — جودة وشفافية</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="quality">
+              <span>جودة الصورة</span>
+              <span class="range-value" id="qualityValue">82%</span>
+            </label>
+            <input id="quality" type="range" min="10" max="100" value="82">
+          </div>
+
+          <div class="field">
+            <label>
+              <span>تغيير الأبعاد</span>
+              <small>اختياري</small>
+            </label>
+
+            <div class="dimension-row">
+              <div class="dimension-item">
+                <label for="widthInput">العرض بالبكسل</label>
+                <input id="widthInput" type="number" min="1" inputmode="numeric" placeholder="مثل 1600">
+              </div>
+
+              <div class="dimension-item">
+                <label for="heightInput">الارتفاع بالبكسل</label>
+                <input id="heightInput" type="number" min="1" inputmode="numeric" placeholder="مثل 900">
+              </div>
+            </div>
+          </div>
+
+          <p class="hint">تغيير أحد البعدين يحافظ تلقائيًا على تناسب الصورة. اترك الحقلين فارغين للحفاظ على الحجم الأصلي.</p>
+
+          <button class="action-button" id="processButton" type="button">
+            <span>⚡</span>
+            <span>ضغط وتحويل الصورة</span>
+          </button>
+
+          <button class="secondary-button" id="resetButton" type="button">
+            اختيار صورة أخرى
+          </button>
+        </section>
+      </div>
+
+      <section class="result" id="result">
+        <h3>✅ أصبحت صورتك جاهزة للتنزيل</h3>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="beforeSize">—</strong>
+            <span>الحجم الأصلي</span>
+          </div>
+
+          <div class="stat">
+            <strong id="afterSize">—</strong>
+            <span>الحجم الجديد</span>
+          </div>
+
+          <div class="stat">
+            <strong id="savedSize">—</strong>
+            <span>التوفير</span>
+          </div>
+        </div>
+
+        <a class="download-button" id="downloadButton" href="#" download>
+          <span>⬇️</span>
+          <span>تنزيل الصورة</span>
+        </a>
+      </section>
+    </section>
+
+    <section class="info">
+      <h2>ضغط الصور بسهولة من الهاتف</h2>
+      <p>تقليل الجودة أو الأبعاد قد يخفف حجم الملف قبل مشاركته عبر التطبيقات أو رفعه إلى موقع. جرّب WebP أو JPG للصور الفوتوغرافية، واستخدم PNG عندما تكون الشفافية مهمة.</p>
+    </section>
+  </main>
+
+  <footer class="container">
+    ضاغط الصور — أداة عربية مجانية لمعالجة الصور محليًا
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const workspace = document.getElementById('workspace');
+    const originalPreview = document.getElementById('originalPreview');
+    const originalDimensions = document.getElementById('originalDimensions');
+    const fileName = document.getElementById('fileName');
+    const format = document.getElementById('format');
+    const quality = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const processButton = document.getElementById('processButton');
+    const resetButton = document.getElementById('resetButton');
+    const result = document.getElementById('result');
+    const beforeSize = document.getElementById('beforeSize');
+    const afterSize = document.getElementById('afterSize');
+    const savedSize = document.getElementById('savedSize');
+    const downloadButton = document.getElementById('downloadButton');
+
+    let selectedFile = null;
+    let sourceImage = null;
+    let imageRatio = 1;
+    let outputUrl = null;
+    let editingDimension = false;
+
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes === 0) return '0 B';
+      const units = ['B', 'KB', 'MB', 'GB'];
+      const index = Math.floor(Math.log(bytes) / Math.log(1024));
+      const value = bytes / Math.pow(1024, index);
+      return `${value.toFixed(index === 0 ? 0 : 2)} ${units[index]}`;
+    }
+
+    function getExtension(mimeType) {
+      const extensions = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/webp': 'webp'
+      };
+      return extensions[mimeType] || 'png';
+    }
+
+    function cleanedFileName(name) {
+      return name.replace(/.[^/.]+$/, '').replace(/[^w؀-ۿ-]+/g, '-');
+    }
+
+    function revokeOutputUrl() {
+      if (outputUrl) {
+        URL.revokeObjectURL(outputUrl);
+        outputUrl = null;
+      }
+    }
+
+    function resetResult() {
+      result.classList.remove('visible');
+      revokeOutputUrl();
+      downloadButton.removeAttribute('href');
+    }
+
+    function loadImage(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        alert('يرجى اختيار ملف صورة صالح.');
+        return;
+      }
+
+      selectedFile = file;
+      resetResult();
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        originalPreview.onload = () => {
+          sourceImage = originalPreview;
+          imageRatio = sourceImage.naturalWidth / sourceImage.naturalHeight;
+
+          originalDimensions.textContent = `${sourceImage.naturalWidth} × ${sourceImage.naturalHeight}`;
+          widthInput.value = sourceImage.naturalWidth;
+          heightInput.value = sourceImage.naturalHeight;
+          fileName.textContent = `${file.name} — ${formatBytes(file.size)}`;
+
+          workspace.classList.add('visible');
+        };
+
+        originalPreview.src = event.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener('change', (event) => {
+      loadImage(event.target.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.add('dragging');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('dragging');
+      });
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+      loadImage(event.dataTransfer.files[0]);
+    });
+
+    quality.addEventListener('input', () => {
+      qualityValue.textContent = `${quality.value}%`;
+      resetResult();
+    });
+
+    format.addEventListener('change', resetResult);
+
+    widthInput.addEventListener('input', () => {
+      if (!sourceImage || editingDimension) return;
+
+      const width = Number(widthInput.value);
+      if (width > 0) {
+        editingDimension = true;
+        heightInput.value = Math.round(width / imageRatio);
+        editingDimension = false;
+      }
+
+      resetResult();
+    });
+
+    heightInput.addEventListener('input', () => {
+      if (!sourceImage || editingDimension) return;
+
+      const height = Number(heightInput.value);
+      if (height > 0) {
+        editingDimension = true;
+        widthInput.value = Math.round(height * imageRatio);
+        editingDimension = false;
+      }
+
+      resetResult();
+    });
+
+    processButton.addEventListener('click', () => {
+      if (!selectedFile || !sourceImage) {
+        alert('اختر صورة أولًا.');
+        return;
+      }
+
+      const width = Math.max(1, Number(widthInput.value) || sourceImage.naturalWidth);
+      const height = Math.max(1, Number(heightInput.value) || sourceImage.naturalHeight);
+      const mimeType = format.value;
+      const compressionQuality = Number(quality.value) / 100;
+
+      processButton.disabled = true;
+      processButton.innerHTML = '<span>⏳</span><span>جارٍ معالجة الصورة...</span>';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const context = canvas.getContext('2d');
+
+      if (mimeType === 'image/jpeg') {
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, width, height);
+      }
+
+      context.drawImage(sourceImage, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        processButton.disabled = false;
+        processButton.innerHTML = '<span>⚡</span><span>ضغط وتحويل الصورة</span>';
+
+        if (!blob) {
+          alert('تعذر معالجة الصورة في هذا المتصفح. جرّب صيغة أخرى.');
+          return;
+        }
+
+        revokeOutputUrl();
+        outputUrl = URL.createObjectURL(blob);
+
+        const extension = getExtension(mimeType);
+        const outputName = `${cleanedFileName(selectedFile.name)}-compressed.${extension}`;
+        const difference = selectedFile.size - blob.size;
+        const percentage = selectedFile.size > 0 ? (difference / selectedFile.size) * 100 : 0;
+
+        beforeSize.textContent = formatBytes(selectedFile.size);
+        afterSize.textContent = formatBytes(blob.size);
+
+        if (difference > 0) {
+          savedSize.textContent = `${percentage.toFixed(1)}% أقل`;
+        } else if (difference < 0) {
+          savedSize.textContent = `${Math.abs(percentage).toFixed(1)}% أكبر`;
+        } else {
+          savedSize.textContent = 'دون تغيير';
+        }
+
+        downloadButton.href = outputUrl;
+        downloadButton.download = outputName;
+        result.classList.add('visible');
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, mimeType, compressionQuality);
+    });
+
+    resetButton.addEventListener('click', () => {
+      selectedFile = null;
+      sourceImage = null;
+      fileInput.value = '';
+      originalPreview.removeAttribute('src');
+      workspace.classList.remove('visible');
+      resetResult();
+      dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    window.addEventListener('beforeunload', revokeOutputUrl);
+  </script>
+</body>
+</html>

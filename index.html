@@ -1258,3 +1258,68 @@ document.addEventListener('DOMContentLoaded', function () {
   footer.insertBefore(links, footer.firstChild);
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const legalLinks = document.querySelector('.legal-links');
+  if (!legalLinks) return;
+
+  const legalTranslations = {
+    ar: {
+      privacy: 'سياسة الخصوصية',
+      terms: 'شروط الاستخدام',
+      about: 'من نحن'
+    },
+    en: {
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Use',
+      about: 'About'
+    },
+    fr: {
+      privacy: 'Politique de confidentialité',
+      terms: 'Conditions d’utilisation',
+      about: 'À propos'
+    },
+    es: {
+      privacy: 'Política de privacidad',
+      terms: 'Términos de uso',
+      about: 'Acerca de'
+    }
+  };
+
+  function updateLegalLinks() {
+    const language = localStorage.getItem('imageCompressorLanguage') || 'ar';
+    const t = legalTranslations[language] || legalTranslations.en;
+    const links = legalLinks.querySelectorAll('a');
+
+    if (links[0]) links[0].textContent = t.privacy;
+    if (links[1]) links[1].textContent = t.terms;
+    if (links[2]) links[2].textContent = t.about;
+  }
+
+  updateLegalLinks();
+
+  const languageSelect = document.getElementById('languageSelect');
+
+  if (languageSelect) {
+    languageSelect.addEventListener('change', function () {
+      window.setTimeout(updateLegalLinks, 0);
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const languageSelect = document.getElementById('languageSelect');
+
+  if (!languageSelect || languageSelect.dataset.reloadOnLanguageChange === 'true') {
+    return;
+  }
+
+  languageSelect.dataset.reloadOnLanguageChange = 'true';
+
+  languageSelect.addEventListener('change', function (event) {
+    localStorage.setItem('imageCompressorLanguage', event.target.value);
+    window.location.reload();
+  });
+});
+</script>

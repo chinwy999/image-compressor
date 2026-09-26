@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://image-compressor-indol-omega.vercel.app/sitemap.xml

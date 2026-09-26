@@ -532,6 +532,24 @@
 
     .info p { margin: 0; }
 
+    .legal-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: .82rem;
+    }
+
+    .legal-links a {
+      color: var(--primary-hover);
+      text-decoration: none;
+    }
+
+    .legal-links a:hover {
+      text-decoration: underline;
+    }
     footer {
       padding: 22px 0 34px;
       border-top: 1px solid var(--border);
@@ -1202,3 +1220,41 @@
   </script>
 </body>
 </html>
+<style>
+.legal-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: .82rem;
+}
+
+.legal-links a {
+  color: #0050D8;
+  text-decoration: none;
+}
+
+.legal-links a:hover {
+  text-decoration: underline;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const footer = document.querySelector('footer');
+  if (!footer || footer.querySelector('.legal-links')) return;
+
+  const links = document.createElement('div');
+  links.className = 'legal-links';
+  links.innerHTML =
+    '<a href="privacy.html">سياسة الخصوصية</a>' +
+    '<span aria-hidden="true">·</span>' +
+    '<a href="terms.html">شروط الاستخدام</a>' +
+    '<span aria-hidden="true">·</span>' +
+    '<a href="about.html">من نحن</a>';
+
+  footer.insertBefore(links, footer.firstChild);
+});
+</script>

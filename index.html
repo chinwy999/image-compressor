@@ -3,31 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="أداة عربية مجانية لضغط وتحويل الصور مباشرة من هاتفك دون رفعها إلى خادم.">
-  <title>ضاغط الصور | ضغط وتحويل JPG وPNG وWebP</title>
+  <meta name="description" content="Compress and convert JPG, PNG and WebP images locally in your browser.">
+  <title>ضاغط الصور | ضغط وتحويل الصور</title>
 
   <style>
     :root {
       --bg: #09111f;
       --surface: #111c2f;
-      --surface-2: #17253d;
       --border: rgba(255,255,255,.12);
       --text: #eef5ff;
       --muted: #a9b7ce;
       --primary: #42c6ff;
-      --primary-dark: #148ccb;
       --success: #29d391;
-      --danger: #ff6e80;
       --shadow: 0 18px 55px rgba(0,0,0,.28);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -40,11 +33,7 @@
         var(--bg);
     }
 
-    button,
-    input,
-    select {
-      font: inherit;
-    }
+    button, input, select { font: inherit; }
 
     button {
       border: 0;
@@ -57,17 +46,20 @@
     }
 
     header {
-      padding: 28px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 0 18px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 12px;
       color: var(--text);
       text-decoration: none;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
     }
 
@@ -80,6 +72,23 @@
       background: linear-gradient(135deg, var(--primary), #7b61ff);
       box-shadow: 0 10px 28px rgba(66,198,255,.27);
       font-size: 1.25rem;
+    }
+
+    .language-select {
+      min-width: 118px;
+      height: 42px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: rgba(17,28,47,.86);
+      cursor: pointer;
+    }
+
+    .language-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(66,198,255,.13);
     }
 
     .hero {
@@ -192,14 +201,10 @@
       margin-top: 24px;
     }
 
-    .workspace.visible {
-      display: grid;
-    }
+    .workspace.visible { display: grid; }
 
     @media (min-width: 820px) {
-      .workspace.visible {
-        grid-template-columns: 1.08fr .92fr;
-      }
+      .workspace.visible { grid-template-columns: 1.08fr .92fr; }
     }
 
     .panel {
@@ -253,9 +258,7 @@
       direction: ltr;
     }
 
-    .field {
-      margin-bottom: 17px;
-    }
+    .field { margin-bottom: 17px; }
 
     .field label {
       display: flex;
@@ -367,9 +370,7 @@
       background: rgba(41,211,145,.055);
     }
 
-    .result.visible {
-      display: block;
-    }
+    .result.visible { display: block; }
 
     .result h3 {
       margin: 0 0 16px;
@@ -427,9 +428,7 @@
       font-size: 1.45rem;
     }
 
-    .info p {
-      margin: 0;
-    }
+    .info p { margin: 0; }
 
     footer {
       padding: 20px 0 35px;
@@ -437,68 +436,82 @@
       font-size: .84rem;
       text-align: center;
     }
+
+    @media (max-width: 520px) {
+      header { align-items: flex-start; }
+      .brand { font-size: 1.05rem; }
+      .language-select { min-width: 105px; }
+      .stats { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 
 <body>
   <header class="container">
-    <a class="brand" href="./" aria-label="العودة للصفحة الرئيسية">
+    <a class="brand" href="./" aria-label="Image Compressor">
       <span class="brand-icon">🖼️</span>
-      <span>ضاغط الصور</span>
+      <span data-i18n="brand">ضاغط الصور</span>
     </a>
+
+    <select class="language-select" id="languageSelect" aria-label="Language selector">
+      <option value="ar">العربية</option>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+    </select>
   </header>
 
   <main class="container">
     <section class="hero">
-      <span class="badge">🔒 تتم المعالجة داخل متصفحك</span>
-      <h1>اضغط وحوّل صورك<br>بسرعة ومن دون رفعها</h1>
-      <p>اختر صورة من هاتفك، حدّد الصيغة والجودة والأبعاد، ثم نزّل النسخة المحسّنة خلال ثوانٍ.</p>
+      <span class="badge" data-i18n="badge">🔒 تتم المعالجة داخل متصفحك</span>
+      <h1 data-i18n-html="heroTitle">اضغط وحوّل صورك<br>بسرعة ومن دون رفعها</h1>
+      <p data-i18n="heroText">اختر صورة من هاتفك، حدّد الصيغة والجودة والأبعاد، ثم نزّل النسخة المحسّنة خلال ثوانٍ.</p>
     </section>
 
-    <section class="app-card" aria-label="أداة ضغط وتحويل الصور">
+    <section class="app-card" aria-label="Image compressor">
       <div class="drop-zone" id="dropZone">
-        <input class="file-input" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="اختر صورة">
+        <input class="file-input" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp" aria-label="Choose an image">
         <div>
           <div class="upload-icon">☁️</div>
-          <h2>اختر صورة للبدء</h2>
-          <p>اضغط هنا لاختيار صورة من هاتفك أو اسحبها إلى هذه المنطقة</p>
+          <h2 data-i18n="uploadTitle">اختر صورة للبدء</h2>
+          <p data-i18n="uploadText">اضغط هنا لاختيار صورة من هاتفك أو اسحبها إلى هذه المنطقة</p>
         </div>
       </div>
 
-      <p class="privacy-note">🛡️ لا نرفع صورك إلى أي خادم في هذه النسخة.</p>
+      <p class="privacy-note" data-i18n="privacy">🛡️ لا نرفع صورك إلى أي خادم في هذه النسخة.</p>
 
       <div class="workspace" id="workspace">
         <section class="panel">
           <h2 class="panel-title">
-            <span>الصورة الأصلية</span>
+            <span data-i18n="originalImage">الصورة الأصلية</span>
             <span id="originalDimensions">—</span>
           </h2>
 
           <div class="image-preview-wrap">
-            <img class="image-preview" id="originalPreview" alt="معاينة الصورة المختارة">
+            <img class="image-preview" id="originalPreview" alt="Image preview">
           </div>
 
           <p class="file-name" id="fileName">—</p>
         </section>
 
         <section class="panel">
-          <h2 class="panel-title">إعدادات المعالجة</h2>
+          <h2 class="panel-title" data-i18n="settings">إعدادات المعالجة</h2>
 
           <div class="field">
             <label for="format">
-              <span>صيغة الإخراج</span>
-              <small>يفضّل WebP لتقليل الحجم</small>
+              <span data-i18n="outputFormat">صيغة الإخراج</span>
+              <small data-i18n="formatHint">يفضّل WebP لتقليل الحجم</small>
             </label>
             <select id="format">
-              <option value="image/webp">WebP — حجم أصغر غالبًا</option>
-              <option value="image/jpeg">JPG — مناسب للصور الفوتوغرافية</option>
-              <option value="image/png">PNG — جودة وشفافية</option>
+              <option value="image/webp" data-i18n="formatWebp">WebP — حجم أصغر غالبًا</option>
+              <option value="image/jpeg" data-i18n="formatJpeg">JPG — مناسب للصور الفوتوغرافية</option>
+              <option value="image/png" data-i18n="formatPng">PNG — جودة وشفافية</option>
             </select>
           </div>
 
           <div class="field">
             <label for="quality">
-              <span>جودة الصورة</span>
+              <span data-i18n="quality">جودة الصورة</span>
               <span class="range-value" id="qualityValue">82%</span>
             </label>
             <input id="quality" type="range" min="10" max="100" value="82">
@@ -506,74 +519,245 @@
 
           <div class="field">
             <label>
-              <span>تغيير الأبعاد</span>
-              <small>اختياري</small>
+              <span data-i18n="resize">تغيير الأبعاد</span>
+              <small data-i18n="optional">اختياري</small>
             </label>
 
             <div class="dimension-row">
               <div class="dimension-item">
-                <label for="widthInput">العرض بالبكسل</label>
-                <input id="widthInput" type="number" min="1" inputmode="numeric" placeholder="مثل 1600">
+                <label for="widthInput" data-i18n="width">العرض بالبكسل</label>
+                <input id="widthInput" type="number" min="1" inputmode="numeric" placeholder="1600">
               </div>
 
               <div class="dimension-item">
-                <label for="heightInput">الارتفاع بالبكسل</label>
-                <input id="heightInput" type="number" min="1" inputmode="numeric" placeholder="مثل 900">
+                <label for="heightInput" data-i18n="height">الارتفاع بالبكسل</label>
+                <input id="heightInput" type="number" min="1" inputmode="numeric" placeholder="900">
               </div>
             </div>
           </div>
 
-          <p class="hint">تغيير أحد البعدين يحافظ تلقائيًا على تناسب الصورة. اترك الحقلين فارغين للحفاظ على الحجم الأصلي.</p>
+          <p class="hint" data-i18n="resizeHint">تغيير أحد البعدين يحافظ تلقائيًا على تناسب الصورة. اترك الحقلين فارغين للحفاظ على الحجم الأصلي.</p>
 
           <button class="action-button" id="processButton" type="button">
             <span>⚡</span>
-            <span>ضغط وتحويل الصورة</span>
+            <span data-i18n="process">ضغط وتحويل الصورة</span>
           </button>
 
-          <button class="secondary-button" id="resetButton" type="button">
+          <button class="secondary-button" id="resetButton" type="button" data-i18n="chooseAnother">
             اختيار صورة أخرى
           </button>
         </section>
       </div>
 
       <section class="result" id="result">
-        <h3>✅ أصبحت صورتك جاهزة للتنزيل</h3>
+        <h3 data-i18n="ready">✅ أصبحت صورتك جاهزة للتنزيل</h3>
 
         <div class="stats">
           <div class="stat">
             <strong id="beforeSize">—</strong>
-            <span>الحجم الأصلي</span>
+            <span data-i18n="originalSize">الحجم الأصلي</span>
           </div>
 
           <div class="stat">
             <strong id="afterSize">—</strong>
-            <span>الحجم الجديد</span>
+            <span data-i18n="newSize">الحجم الجديد</span>
           </div>
 
           <div class="stat">
             <strong id="savedSize">—</strong>
-            <span>التوفير</span>
+            <span data-i18n="savings">التوفير</span>
           </div>
         </div>
 
         <a class="download-button" id="downloadButton" href="#" download>
           <span>⬇️</span>
-          <span>تنزيل الصورة</span>
+          <span data-i18n="download">تنزيل الصورة</span>
         </a>
       </section>
     </section>
 
     <section class="info">
-      <h2>ضغط الصور بسهولة من الهاتف</h2>
-      <p>تقليل الجودة أو الأبعاد قد يخفف حجم الملف قبل مشاركته عبر التطبيقات أو رفعه إلى موقع. جرّب WebP أو JPG للصور الفوتوغرافية، واستخدم PNG عندما تكون الشفافية مهمة.</p>
+      <h2 data-i18n="infoTitle">ضغط الصور بسهولة من الهاتف</h2>
+      <p data-i18n="infoText">تقليل الجودة أو الأبعاد قد يخفف حجم الملف قبل مشاركته عبر التطبيقات أو رفعه إلى موقع. جرّب WebP أو JPG للصور الفوتوغرافية، واستخدم PNG عندما تكون الشفافية مهمة.</p>
     </section>
   </main>
 
-  <footer class="container">
-    ضاغط الصور — أداة عربية مجانية لمعالجة الصور محليًا
+  <footer class="container" data-i18n="footer">
+    ضاغط الصور — أداة مجانية لمعالجة الصور محليًا
   </footer>
 
   <script>
+    const translations = {
+      ar: {
+        title: 'ضاغط الصور | ضغط وتحويل الصور',
+        brand: 'ضاغط الصور',
+        badge: '🔒 تتم المعالجة داخل متصفحك',
+        heroTitle: 'اضغط وحوّل صورك<br>بسرعة ومن دون رفعها',
+        heroText: 'اختر صورة من هاتفك، حدّد الصيغة والجودة والأبعاد، ثم نزّل النسخة المحسّنة خلال ثوانٍ.',
+        uploadTitle: 'اختر صورة للبدء',
+        uploadText: 'اضغط هنا لاختيار صورة من هاتفك أو اسحبها إلى هذه المنطقة',
+        privacy: '🛡️ لا نرفع صورك إلى أي خادم في هذه النسخة.',
+        originalImage: 'الصورة الأصلية',
+        settings: 'إعدادات المعالجة',
+        outputFormat: 'صيغة الإخراج',
+        formatHint: 'يفضّل WebP لتقليل الحجم',
+        formatWebp: 'WebP — حجم أصغر غالبًا',
+        formatJpeg: 'JPG — مناسب للصور الفوتوغرافية',
+        formatPng: 'PNG — جودة وشفافية',
+        quality: 'جودة الصورة',
+        resize: 'تغيير الأبعاد',
+        optional: 'اختياري',
+        width: 'العرض بالبكسل',
+        height: 'الارتفاع بالبكسل',
+        resizeHint: 'تغيير أحد البعدين يحافظ تلقائيًا على تناسب الصورة. اترك الحقلين فارغين للحفاظ على الحجم الأصلي.',
+        process: 'ضغط وتحويل الصورة',
+        processing: 'جارٍ معالجة الصورة...',
+        chooseAnother: 'اختيار صورة أخرى',
+        ready: '✅ أصبحت صورتك جاهزة للتنزيل',
+        originalSize: 'الحجم الأصلي',
+        newSize: 'الحجم الجديد',
+        savings: 'التوفير',
+        download: 'تنزيل الصورة',
+        infoTitle: 'ضغط الصور بسهولة من الهاتف',
+        infoText: 'تقليل الجودة أو الأبعاد قد يخفف حجم الملف قبل مشاركته عبر التطبيقات أو رفعه إلى موقع. جرّب WebP أو JPG للصور الفوتوغرافية، واستخدم PNG عندما تكون الشفافية مهمة.',
+        footer: 'ضاغط الصور — أداة مجانية لمعالجة الصور محليًا',
+        invalidImage: 'يرجى اختيار ملف صورة صالح.',
+        selectFirst: 'اختر صورة أولًا.',
+        conversionError: 'تعذر معالجة الصورة في هذا المتصفح. جرّب صيغة أخرى.',
+        less: 'أقل',
+        larger: 'أكبر',
+        unchanged: 'دون تغيير',
+        previewAlt: 'معاينة الصورة المختارة',
+        chooseImageAria: 'اختر صورة'
+      },
+      en: {
+        title: 'Image Compressor | Compress and Convert Images',
+        brand: 'Image Compressor',
+        badge: '🔒 Processed entirely in your browser',
+        heroTitle: 'Compress and convert images<br>without uploading them',
+        heroText: 'Choose an image from your device, set the format, quality, and dimensions, then download the optimized version in seconds.',
+        uploadTitle: 'Choose an image to start',
+        uploadText: 'Tap here to choose an image from your device or drag it into this area',
+        privacy: '🛡️ Your images are not uploaded to any server.',
+        originalImage: 'Original image',
+        settings: 'Processing settings',
+        outputFormat: 'Output format',
+        formatHint: 'WebP is usually smaller',
+        formatWebp: 'WebP — usually smaller',
+        formatJpeg: 'JPG — best for photos',
+        formatPng: 'PNG — quality and transparency',
+        quality: 'Image quality',
+        resize: 'Resize image',
+        optional: 'Optional',
+        width: 'Width in pixels',
+        height: 'Height in pixels',
+        resizeHint: 'Changing one dimension keeps the image proportion. Leave both fields empty to keep original dimensions.',
+        process: 'Compress and convert image',
+        processing: 'Processing image...',
+        chooseAnother: 'Choose another image',
+        ready: '✅ Your image is ready to download',
+        originalSize: 'Original size',
+        newSize: 'New size',
+        savings: 'Savings',
+        download: 'Download image',
+        infoTitle: 'Compress images easily from your phone',
+        infoText: 'Reducing quality or dimensions can reduce file size before sharing or uploading. Try WebP or JPG for photos, and PNG when transparency matters.',
+        footer: 'Image Compressor — Free local image processing tool',
+        invalidImage: 'Please choose a valid image file.',
+        selectFirst: 'Choose an image first.',
+        conversionError: 'This browser could not process the image. Try another format.',
+        less: 'smaller',
+        larger: 'larger',
+        unchanged: 'No change',
+        previewAlt: 'Selected image preview',
+        chooseImageAria: 'Choose an image'
+      },
+      fr: {
+        title: 'Compresseur d’images | Compresser et convertir',
+        brand: 'Compresseur d’images',
+        badge: '🔒 Traitement effectué dans votre navigateur',
+        heroTitle: 'Compressez et convertissez vos images<br>sans les envoyer en ligne',
+        heroText: 'Choisissez une image, définissez le format, la qualité et les dimensions, puis téléchargez la version optimisée en quelques secondes.',
+        uploadTitle: 'Choisissez une image pour commencer',
+        uploadText: 'Touchez ici pour choisir une image ou déposez-la dans cette zone',
+        privacy: '🛡️ Vos images ne sont envoyées vers aucun serveur.',
+        originalImage: 'Image originale',
+        settings: 'Paramètres de traitement',
+        outputFormat: 'Format de sortie',
+        formatHint: 'WebP est souvent plus léger',
+        formatWebp: 'WebP — souvent plus léger',
+        formatJpeg: 'JPG — idéal pour les photos',
+        formatPng: 'PNG — qualité et transparence',
+        quality: 'Qualité de l’image',
+        resize: 'Redimensionner l’image',
+        optional: 'Facultatif',
+        width: 'Largeur en pixels',
+        height: 'Hauteur en pixels',
+        resizeHint: 'Modifier une dimension conserve les proportions. Laissez les deux champs vides pour garder les dimensions originales.',
+        process: 'Compresser et convertir',
+        processing: 'Traitement de l’image...',
+        chooseAnother: 'Choisir une autre image',
+        ready: '✅ Votre image est prête à télécharger',
+        originalSize: 'Taille originale',
+        newSize: 'Nouvelle taille',
+        savings: 'Économie',
+        download: 'Télécharger l’image',
+        infoTitle: 'Compressez vos images facilement sur téléphone',
+        infoText: 'Réduire la qualité ou les dimensions peut alléger le fichier avant un partage ou un envoi. Essayez WebP ou JPG pour les photos, et PNG pour la transparence.',
+        footer: 'Compresseur d’images — Outil gratuit de traitement local',
+        invalidImage: 'Veuillez choisir un fichier image valide.',
+        selectFirst: 'Choisissez d’abord une image.',
+        conversionError: 'Ce navigateur ne peut pas traiter cette image. Essayez un autre format.',
+        less: 'plus petit',
+        larger: 'plus grand',
+        unchanged: 'Aucun changement',
+        previewAlt: 'Aperçu de l’image sélectionnée',
+        chooseImageAria: 'Choisir une image'
+      },
+      es: {
+        title: 'Compresor de imágenes | Comprimir y convertir',
+        brand: 'Compresor de imágenes',
+        badge: '🔒 Procesado completamente en tu navegador',
+        heroTitle: 'Comprime y convierte imágenes<br>sin subirlas a ningún servidor',
+        heroText: 'Elige una imagen, configura el formato, la calidad y las dimensiones, y descarga la versión optimizada en segundos.',
+        uploadTitle: 'Elige una imagen para comenzar',
+        uploadText: 'Toca aquí para elegir una imagen o arrástrala a esta zona',
+        privacy: '🛡️ Tus imágenes no se suben a ningún servidor.',
+        originalImage: 'Imagen original',
+        settings: 'Ajustes de procesamiento',
+        outputFormat: 'Formato de salida',
+        formatHint: 'WebP suele ser más ligero',
+        formatWebp: 'WebP — normalmente más ligero',
+        formatJpeg: 'JPG — ideal para fotos',
+        formatPng: 'PNG — calidad y transparencia',
+        quality: 'Calidad de imagen',
+        resize: 'Cambiar dimensiones',
+        optional: 'Opcional',
+        width: 'Ancho en píxeles',
+        height: 'Alto en píxeles',
+        resizeHint: 'Cambiar una dimensión mantiene la proporción. Deja ambos campos vacíos para conservar el tamaño original.',
+        process: 'Comprimir y convertir imagen',
+        processing: 'Procesando imagen...',
+        chooseAnother: 'Elegir otra imagen',
+        ready: '✅ Tu imagen está lista para descargar',
+        originalSize: 'Tamaño original',
+        newSize: 'Nuevo tamaño',
+        savings: 'Ahorro',
+        download: 'Descargar imagen',
+        infoTitle: 'Comprime imágenes fácilmente desde tu móvil',
+        infoText: 'Reducir la calidad o las dimensiones puede disminuir el tamaño antes de compartir o subir una imagen. Prueba WebP o JPG para fotos y PNG cuando necesites transparencia.',
+        footer: 'Compresor de imágenes — Herramienta gratuita de procesamiento local',
+        invalidImage: 'Selecciona un archivo de imagen válido.',
+        selectFirst: 'Selecciona primero una imagen.',
+        conversionError: 'Este navegador no pudo procesar la imagen. Prueba otro formato.',
+        less: 'más pequeño',
+        larger: 'más grande',
+        unchanged: 'Sin cambios',
+        previewAlt: 'Vista previa de la imagen seleccionada',
+        chooseImageAria: 'Elegir una imagen'
+      }
+    };
+
     const fileInput = document.getElementById('fileInput');
     const dropZone = document.getElementById('dropZone');
     const workspace = document.getElementById('workspace');
@@ -592,12 +776,54 @@
     const afterSize = document.getElementById('afterSize');
     const savedSize = document.getElementById('savedSize');
     const downloadButton = document.getElementById('downloadButton');
+    const languageSelect = document.getElementById('languageSelect');
 
     let selectedFile = null;
     let sourceImage = null;
     let imageRatio = 1;
     let outputUrl = null;
+    let currentLanguage = 'ar';
     let editingDimension = false;
+
+    function text(key) {
+      return translations[currentLanguage][key] || translations.en[key] || key;
+    }
+
+    function detectLanguage() {
+      const saved = localStorage.getItem('imageCompressorLanguage');
+      if (saved && translations[saved]) return saved;
+
+      const browserLanguage = (navigator.language || 'en').split('-')[0];
+      return translations[browserLanguage] ? browserLanguage : 'en';
+    }
+
+    function setLanguage(language) {
+      currentLanguage = translations[language] ? language : 'en';
+      const isArabic = currentLanguage === 'ar';
+
+      document.documentElement.lang = currentLanguage;
+      document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+      document.title = text('title');
+      languageSelect.value = currentLanguage;
+      fileInput.setAttribute('aria-label', text('chooseImageAria'));
+      originalPreview.alt = text('previewAlt');
+
+      document.querySelectorAll('[data-i18n]').forEach((element) => {
+        const key = element.dataset.i18n;
+        element.textContent = text(key);
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach((element) => {
+        const key = element.dataset.i18nHtml;
+        element.innerHTML = text(key);
+      });
+
+      if (selectedFile && sourceImage) {
+        fileName.textContent = `${selectedFile.name} — ${formatBytes(selectedFile.size)}`;
+      }
+
+      localStorage.setItem('imageCompressorLanguage', currentLanguage);
+    }
 
     function formatBytes(bytes) {
       if (!Number.isFinite(bytes) || bytes === 0) return '0 B';
@@ -635,7 +861,7 @@
 
     function loadImage(file) {
       if (!file || !file.type.startsWith('image/')) {
-        alert('يرجى اختيار ملف صورة صالح.');
+        alert(text('invalidImage'));
         return;
       }
 
@@ -657,6 +883,10 @@
           workspace.classList.add('visible');
         };
 
+        originalPreview.onerror = () => {
+          alert(text('conversionError'));
+        };
+
         originalPreview.src = event.target.result;
       };
 
@@ -665,6 +895,10 @@
 
     fileInput.addEventListener('change', (event) => {
       loadImage(event.target.files[0]);
+    });
+
+    languageSelect.addEventListener('change', (event) => {
+      setLanguage(event.target.value);
     });
 
     ['dragenter', 'dragover'].forEach((eventName) => {
@@ -720,7 +954,7 @@
 
     processButton.addEventListener('click', () => {
       if (!selectedFile || !sourceImage) {
-        alert('اختر صورة أولًا.');
+        alert(text('selectFirst'));
         return;
       }
 
@@ -730,7 +964,7 @@
       const compressionQuality = Number(quality.value) / 100;
 
       processButton.disabled = true;
-      processButton.innerHTML = '<span>⏳</span><span>جارٍ معالجة الصورة...</span>';
+      processButton.innerHTML = `<span>⏳</span><span>${text('processing')}</span>`;
 
       const canvas = document.createElement('canvas');
       canvas.width = width;
@@ -747,10 +981,10 @@
 
       canvas.toBlob((blob) => {
         processButton.disabled = false;
-        processButton.innerHTML = '<span>⚡</span><span>ضغط وتحويل الصورة</span>';
+        processButton.innerHTML = `<span>⚡</span><span>${text('process')}</span>`;
 
         if (!blob) {
-          alert('تعذر معالجة الصورة في هذا المتصفح. جرّب صيغة أخرى.');
+          alert(text('conversionError'));
           return;
         }
 
@@ -766,11 +1000,11 @@
         afterSize.textContent = formatBytes(blob.size);
 
         if (difference > 0) {
-          savedSize.textContent = `${percentage.toFixed(1)}% أقل`;
+          savedSize.textContent = `${percentage.toFixed(1)}% ${text('less')}`;
         } else if (difference < 0) {
-          savedSize.textContent = `${Math.abs(percentage).toFixed(1)}% أكبر`;
+          savedSize.textContent = `${Math.abs(percentage).toFixed(1)}% ${text('larger')}`;
         } else {
-          savedSize.textContent = 'دون تغيير';
+          savedSize.textContent = text('unchanged');
         }
 
         downloadButton.href = outputUrl;
@@ -791,6 +1025,8 @@
     });
 
     window.addEventListener('beforeunload', revokeOutputUrl);
+
+    setLanguage(detectLanguage());
   </script>
 </body>
 </html>
